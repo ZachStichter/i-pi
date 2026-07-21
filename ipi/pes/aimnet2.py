@@ -62,10 +62,10 @@ class AIMNet2Driver(ASEDriver):
 
         # Import AIMNet2 ASE Calculator interface
         try:
-            from aimnet.calculators import AIMNet2ASE
+            from aimnet.calculators import AIMNet2ASE, AIMNet2Calculator
         except ImportError:
             try:
-                from aimnet2calc import AIMNet2ASE
+                from aimnet2calc import AIMNet2ASE, AIMNet2Calculator
             except ImportError:
                 raise ImportError(
                     "Could not import AIMNet2 ASE interface. "
@@ -73,10 +73,13 @@ class AIMNet2Driver(ASEDriver):
                 )
 
         # Initialize the calculator with model parameters
-        self.ase_calculator = AIMNet2ASE(
+        base_calc = AIMNet2Calculator(
             model=self.model_name,
             charge=self.charge,
             mult=self.mult,
+        )
+        self.ase_calculator = AIMNet2ASE(
+            base_calc
         )
 
         # Configure long-range Coulomb settings if specified for periodic systems
