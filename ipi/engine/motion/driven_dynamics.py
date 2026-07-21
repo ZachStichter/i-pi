@@ -397,7 +397,7 @@ dproperties(ElectricDipole, ["dipole", "nbeads", "forces"])
 class ElectricField:
     """Class to handle the time dependent electric field when performing driven dynamics (with 'eda-nve' and 'eda-nvt')"""
 
-    def __init__(self, amp=None, freq=None, phase=None, peak=None, sigma=None):
+    def __init__(self, amp=None, freq=None, phase=None, peak=None, sigma=None, spatial_peak=None, spatial_sigma=None, kappa=None,):
         self._amp = depend_array(
             name="amp", value=amp if amp is not None else np.zeros(3)
         )
