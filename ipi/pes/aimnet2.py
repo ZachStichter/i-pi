@@ -73,13 +73,10 @@ class AIMNet2Driver(ASEDriver):
                 )
 
         # Initialize the calculator with model parameters
-        base_calc = AIMNet2Calculator(
-            model=self.model_name,
+        self.ase_calculator = AIMNet2ASE(
+            base_calc=self.model_name,
             charge=self.charge,
             mult=self.mult,
-        )
-        self.ase_calculator = AIMNet2ASE(
-            base_calc
         )
 
         # Configure long-range Coulomb settings if specified for periodic systems
