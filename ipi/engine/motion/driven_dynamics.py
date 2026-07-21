@@ -409,6 +409,15 @@ class ElectricField:
         self._sigma = depend_value(
             name="sigma", value=sigma if sigma is not None else np.inf
         )
+        self._spatial_peak = depend_array(
+            name="spatial_peak", value=spatial_peak if spatial_peak is not None else np.zeros(3)
+        )
+        self._spatial_sigma = depend_array(
+            name="spatial_sigma", value=spatial_sigma if spatial_sigma is not None else np.full(3, np.inf)
+        )
+        self._kappa = depend_array(
+            name="kappa", value=kappa if kappa is not None else np.zeros(3)
+        )
         self.enabled = True
 
     def bind(self, driven_dyn, enstype: str):
@@ -423,9 +432,12 @@ class ElectricField:
         self.phase.store(ef.phase)
         self.peak.store(ef.peak)
         self.sigma.store(ef.sigma)
+        self.spatial_peak.store(ef.spatial_peak)
+        self.spatial_sigma.store(ef.spatial_sigma)
+        self.kappa.store(ef.kappa)
         pass
 
-    def Efield(self, time):
+    def Efield(self, time, q=None):
         """Get the value of the external electric field (cartesian axes)"""
         if not self.enabled:  # return a zero field with the correct shape
             if hasattr(time, "__len__"):
@@ -435,10 +447,14 @@ class ElectricField:
         else:
             Eenv = self.Eenvelope(time)  # evaluate the envelope function
             Ecos = self._get_Ecos(time)  # evaluate the cos function
+            Eenv_space = self.Spatial_Envelope(q) if q is not None else 1.0
+
+            Eenv_total = Eenv*Ecos*Eenv_space
+
             if hasattr(time, "__len__"):
-                return np.outer(Ecos * Eenv, self.amp)
+                return np.outer(Eenv_total, self.amp)
             else:
-                return Ecos * Eenv * self.amp
+                return Eenv_total * self.amp
 
     def _Eenvelope_is_on(self):
         return self.peak > 0.0 and self.sigma != np.inf
@@ -458,9 +474,25 @@ class ElectricField:
     def _get_Ecos(self, time):
         """Get the sinusoidal part of the external electric field"""
         return np.cos(self.freq * time + self.phase)
+    
+    def _Use_Spatial_Envelope(self):
+        return np.any(self.spatial_dispersion != np.inf)
+    
+    def Spatial_Envelope(self,q):
+        if self._Use_Spatial_Envelope():
+            q_shaped = np.reshape(q, (-1,3))
+            diff = np.abs(q_shaped - self.spatial_peak)
 
+            exponent = np.zeros(q_shaped.shape[0])
+
+            for i in range(3):
+                if self.spatial_sigma[i] != np.inf:
+                    exponent -= self.kappa[i] * diff[:,i]
+            return np.exp(exponent)
+        return 1.0
+    
 
 dproperties(
     ElectricField,
-    ["amp", "phase", "peak", "sigma", "freq"],
+    ["amp", "phase", "peak", "sigma", "freq", "spatial_peak", "spatial_sigma", "kappa"],
 )
