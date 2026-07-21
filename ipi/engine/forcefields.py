@@ -2405,11 +2405,15 @@ class FFCavPhSocket(FFSocket):
                     )
                     if not has_dipole_der or not check_dipole_der:
                         softexit.trigger(
-                            "Dipole surface is turned on, but the required dipole information is not provided in extras. \
-                            Please check if the driver provides the dipole and its derivative information in extras, \
-                            and make sure the size of dipole and dipole derivative information matches the number of atoms. \
-                            If you do not want to include dipole surface contribution, please set `dipole_surface = False`."
-                        )
+                            status="bad",
+                            message="Dipole surface is turned on, but the required dipole information is not provided in extras." 
+                            "Please check if the driver provides the dipole and its derivative information in extras," 
+                            "and make sure the size of dipole and dipole derivative information matches the number of atoms."
+                            "If you do not want to include dipole surface contribution, please set `dipole_surface = False`." 
+                            f"Dipole: {'dipole' in extra}; Dipder: {'dipole_derivative' in extra};"
+                            f" Dipole shape: {np.array(extra.get('dipole',[])).shape}; Dipder shape: {np.array(extra.get('dipole_derivative',[])).shape};"
+                            f" Expected Dipole Shape: (3,); Expected Dipder Shape: ({(len(pbcpos)-self.ph.n_photon * 3) * 3},)"
+                    )
 
                     # this is the path when using a dipole driver in i-pi to calculate dipole information
                     # !!! ONLY WORK FOR A SINGLE GRID POINT (BATH) FOR NOW !!!
