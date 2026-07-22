@@ -72,7 +72,7 @@ class AIMNet2Driver(ASEDriver):
                     "Please install aimnet via: pip install 'aimnet[ase]'"
                 )
 
-        class PatchedAIMNet2(AIMNet2Calculator):
+        class PatchedAIMNet2(AIMNet2ASE):
             def calculate(self, atoms=None, properties=None, system_changes=None):
                 super().calculate(atoms, properties, system_changes)
                 
