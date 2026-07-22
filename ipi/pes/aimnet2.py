@@ -10,7 +10,7 @@ __DRIVER_NAME__ = "aimnet2"
 __DRIVER_CLASS__ = "AIMNet2Driver"
 
 class PatchedAIMNet2(AIMNet2Calculator):
-    def calculate(self, atoms=None, properties, system_changes):
+    def calculate(self, atoms=None, properties=None, system_changes=None):
         super().calculate(atoms, properties, system_changes)
         
         # Intercept the results dictionary and rename the key
