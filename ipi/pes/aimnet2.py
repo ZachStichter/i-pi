@@ -36,7 +36,7 @@ class AIMNet2Driver(ASEDriver):
         lrcoulomb_method=None,
         has_energy=True,
         has_forces=True,
-        has_stress=False,
+        has_stress=True,
         *args,
         **kwargs,
     ):
