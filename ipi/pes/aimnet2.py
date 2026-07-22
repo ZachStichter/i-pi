@@ -9,14 +9,6 @@ from ipi.pes._ase import ASEDriver
 __DRIVER_NAME__ = "aimnet2"
 __DRIVER_CLASS__ = "AIMNet2Driver"
 
-class PatchedAIMNet2(AIMNet2Calculator):
-    def calculate(self, atoms=None, properties=None, system_changes=None):
-        super().calculate(atoms, properties, system_changes)
-        
-        # Intercept the results dictionary and rename the key
-        if 'dipole_moment' in self.results:
-            self.results['dipole'] = self.results.pop('dipole_moment')
-
 
 class AIMNet2Driver(ASEDriver):
     """
@@ -79,6 +71,14 @@ class AIMNet2Driver(ASEDriver):
                     "Could not import AIMNet2 ASE interface. "
                     "Please install aimnet via: pip install 'aimnet[ase]'"
                 )
+
+        class PatchedAIMNet2(AIMNet2Calculator):
+            def calculate(self, atoms=None, properties=None, system_changes=None):
+                super().calculate(atoms, properties, system_changes)
+                
+                # Intercept the results dictionary and rename the key
+                if 'dipole_moment' in self.results:
+                    self.results['dipole'] = self.results.pop('dipole_moment')
 
         # Initialize the calculator with model parameters
         self.ase_calculator = AIMNet2ASE(
