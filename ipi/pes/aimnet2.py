@@ -74,6 +74,7 @@ class AIMNet2Driver(ASEDriver):
 
         class PatchedAIMNet2(AIMNet2ASE):
             def calculate(self, atoms=None, properties=None, system_changes=None):
+                self.atoms.pbc = True
                 super().calculate(atoms, properties, system_changes)
                 
                 # Intercept the results dictionary and rename the key
