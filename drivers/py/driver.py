@@ -69,6 +69,7 @@ def run_driver(
     # only the bulk payload travels through shared memory (same node only).
     if unix or shm:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        print(f"Connecting to {sockets_prefix + address}")
         sock.connect(sockets_prefix + address)
     else:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
