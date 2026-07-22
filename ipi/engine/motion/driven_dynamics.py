@@ -433,7 +433,6 @@ class ElectricField:
         self.peak.store(ef.peak)
         self.sigma.store(ef.sigma)
         self.spatial_peak.store(ef.spatial_peak)
-        self.spatial_sigma.store(ef.spatial_sigma)
         self.kappa.store(ef.kappa)
         pass
 
@@ -476,7 +475,7 @@ class ElectricField:
         return np.cos(self.freq * time + self.phase)
     
     def _Use_Spatial_Envelope(self):
-        return np.any(self.spatial_dispersion != np.inf)
+        return np.any(self.kappa != np.inf)
     
     def Spatial_Envelope(self,q):
         if self._Use_Spatial_Envelope():
@@ -486,7 +485,7 @@ class ElectricField:
             exponent = np.zeros(q_shaped.shape[0])
 
             for i in range(3):
-                if self.spatial_sigma[i] != np.inf:
+                if self.kappa[i] != np.inf:
                     exponent -= self.kappa[i] * diff[:,i]
             return np.exp(exponent)
         return 1.0
