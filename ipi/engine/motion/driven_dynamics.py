@@ -493,5 +493,5 @@ class ElectricField:
 
 dproperties(
     ElectricField,
-    ["amp", "phase", "peak", "sigma", "freq", "spatial_peak", "spatial_sigma", "kappa"],
+    ["amp", "phase", "peak", "sigma", "freq", "spatial_peak", "kappa"],
 )

@@ -82,6 +82,8 @@ class InputElectricField(Input):
         self.phase.store(Efield.phase)
         self.peak.store(Efield.peak)
         self.sigma.store(Efield.sigma)
+        self.kappa.store(Efield.kappa)
+        self.spatial_peak.store(Efield.spatial_peak)
         return
 
     def fetch(self):
@@ -91,6 +93,8 @@ class InputElectricField(Input):
             phase=self.phase.fetch(),
             peak=self.peak.fetch(),
             sigma=self.sigma.fetch(),
+            kappa=self.kappa.fetch(),
+            spatial_peak=self.spatial_peak.fetch(),
         )
 
 
