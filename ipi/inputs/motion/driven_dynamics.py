@@ -71,6 +71,24 @@ class InputElectricField(Input):
                 "dimension": "time",
             },
         ),
+        "kappa": (
+            InputArray,
+            {
+                "dtype": float,
+                "default": np.full(3,np.inf),
+                "help": "The decay length of the evanescent field.",
+                "dimension": "length",
+            },
+        ),
+        "spatial_peak": (
+            InputArray,
+            {
+                "dtype": float,
+                "default": np.zeros(3),
+                "help": "The center of the evanescent field",
+                "dimension": "length",
+            },
+        ),
     }
 
     default_help = "Simulates an external time dependent electric field"
