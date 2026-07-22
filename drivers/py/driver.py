@@ -5,7 +5,6 @@ import numpy as np
 from multiprocessing import shared_memory, resource_tracker
 from ipi.pes import Dummy_driver, load_pes, __drivers__
 from ipi.utils.io.inputs import read_args_kwargs
-from ipi.utils.messages import info
 
 description = """
 Minimal example of a Python driver connecting to i-PI and exchanging energy, forces, etc.
@@ -70,7 +69,6 @@ def run_driver(
     # only the bulk payload travels through shared memory (same node only).
     if unix or shm:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        info(f"Connecting to {sockets_prefix + address}", True)
         sock.connect(sockets_prefix + address)
     else:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
