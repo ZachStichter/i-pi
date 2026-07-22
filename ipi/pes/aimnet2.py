@@ -71,6 +71,20 @@ class AIMNet2Driver(ASEDriver):
                     "Could not import AIMNet2 ASE interface. "
                     "Please install aimnet via: pip install 'aimnet[ase]'"
                 )
+        try:
+            from ase.stress import full_3x3_to_voigt_6_stress
+        except ImportError:
+            try:
+                from ase.constraints import full_3x3_to_voigt_6_stress
+            except ImportError:
+                import numpy as np
+                def full_3x3_to_voigt_6_stress(s):
+                    return np.array([
+                        s[0, 0], s[1, 1], s[2, 2],
+                        0.5 * (s[1, 2] + s[2, 1]),
+                        0.5 * (s[0, 2] + s[2, 0]),
+                        0.5 * (s[0, 1] + s[1, 0])
+                    ])
 
         class PatchedAIMNet2(AIMNet2ASE):
             def calculate(self, atoms=None, properties=None, system_changes=None):
@@ -80,6 +94,11 @@ class AIMNet2Driver(ASEDriver):
                 # Intercept the results dictionary and rename the key
                 if 'dipole_moment' in self.results:
                     self.results['dipole'] = self.results.pop('dipole_moment')
+
+                if "stress" in self.results and self.results["stress"] is not None:
+                    stress_arr = self.results["stress"]
+                    if hasattr(stress_arr, "shape") and stress_arr.shape == (3, 3):
+                        self.results["stress"] = full_3x3_to_voigt_6_stress(stress_arr)
 
         # Initialize the calculator with model parameters
         self.ase_calculator = PatchedAIMNet2(
