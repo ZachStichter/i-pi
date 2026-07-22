@@ -102,7 +102,7 @@ class AIMNet2Driver(ASEDriver):
 
         # Initialize the calculator with model parameters
         self.ase_calculator = PatchedAIMNet2(
-            base_calc=AIMNet2Calculator(self.model_name, compile_model=True),
+            base_calc=AIMNet2Calculator(self.model_name, compile_model=False),
             charge=self.charge,
             mult=self.mult,
         )
