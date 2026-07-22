@@ -9,6 +9,14 @@ from ipi.pes._ase import ASEDriver
 __DRIVER_NAME__ = "aimnet2"
 __DRIVER_CLASS__ = "AIMNet2Driver"
 
+class PatchedAIMNet2(AIMNet2Calculator):
+    def calculate(self, atoms=None, properties, system_changes):
+        super().calculate(atoms, properties, system_changes)
+        
+        # Intercept the results dictionary and rename the key
+        if 'dipole_moment' in self.results:
+            self.results['dipole'] = self.results.pop('dipole_moment')
+
 
 class AIMNet2Driver(ASEDriver):
     """
@@ -74,7 +82,7 @@ class AIMNet2Driver(ASEDriver):
 
         # Initialize the calculator with model parameters
         self.ase_calculator = AIMNet2ASE(
-            base_calc=AIMNet2Calculator(self.model_name, compile_model=True),
+            base_calc=PatchedAIMNet2(self.model_name, compile_model=True),
             charge=self.charge,
             mult=self.mult,
         )
