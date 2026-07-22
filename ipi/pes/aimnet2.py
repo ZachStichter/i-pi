@@ -81,8 +81,8 @@ class AIMNet2Driver(ASEDriver):
                     self.results['dipole'] = self.results.pop('dipole_moment')
 
         # Initialize the calculator with model parameters
-        self.ase_calculator = AIMNet2ASE(
-            base_calc=PatchedAIMNet2(self.model_name, compile_model=True),
+        self.ase_calculator = PatchedAIMNet2(
+            base_calc=AIMNet2Calculator(self.model_name, compile_model=True),
             charge=self.charge,
             mult=self.mult,
         )
