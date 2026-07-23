@@ -78,8 +78,11 @@ class QChem_driver(Dummy_driver):
         # just evaluates zeros 
         vir = cell * 0.0  # makes a zero virial with same shape as cell
 
+        print(self.dipole_derivative)
+
         if self.dipole_derivative:
             dipder = self._calculate_apt(cell, pos_ang)
+            print(dipder)
             extras = json.dumps(
                 {"dipole": electric_dipole.tolist(),
                  "dipole_derivative": dipder.flatten().tolist(),
